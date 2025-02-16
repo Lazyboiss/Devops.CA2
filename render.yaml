@@ -1,15 +1,32 @@
 services:
-  - name: web
+  - name: generator
     type: web
     runtime: docker
-    repo: https://github.com/YOUR_USERNAME/YOUR_REPO
+    repo: https://github.com/Lazyboiss/Devops.CA2
+    plan: free  # Use "starter" or "pro" if needed
     region: singapore  # Change to your preferred region
-    plan: free  # Change to "starter" or "pro" if needed
     envVars:
-      - key: FLASK_ENV
-        value: production
-      - key: DATABASE_URL
-        fromService:
-          name: db
-          property: connectionString
-    autoDeploy: true  # Auto-redeploy on GitHub changes
+      - key: MODEL_NAME
+        value: generator
+    disk:
+      name: generator-model
+      mountPath: /models/generator/1
+      sizeGB: 1  # Adjust if your model is larger
+    dockerCommand: tensorflow_model_server --port=8501 --rest_api_port=8501 --model_base_path=/models/generator --model_name=generator
+    autoDeploy: true
+
+  - name: discriminator
+    type: web
+    runtime: docker
+    repo: https://github.com/Lazyboiss/Devops.CA2
+    plan: free
+    region: singapore
+    envVars:
+      - key: MODEL_NAME
+        value: discriminator
+    disk:
+      name: discriminator-model
+      mountPath: /models/discriminator/1
+      sizeGB: 1  # Adjust if your model is larger
+    dockerCommand: tensorflow_model_server --port=8501 --rest_api_port=8501 --model_base_path=/models/discriminator --model_name=discriminator
+    autoDeploy: true
