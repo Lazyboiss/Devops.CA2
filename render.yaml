@@ -1,0 +1,15 @@
+services:
+  - name: web
+    type: web
+    runtime: docker
+    repo: https://github.com/YOUR_USERNAME/YOUR_REPO
+    region: singapore  # Change to your preferred region
+    plan: free  # Change to "starter" or "pro" if needed
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromService:
+          name: db
+          property: connectionString
+    autoDeploy: true  # Auto-redeploy on GitHub changes
