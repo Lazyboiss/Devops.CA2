@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from werkzeug.security import generate_password_hash, check_password_hash
 from supabase import create_client, Client
 from dotenv import load_dotenv
-import os, random, requests, json, PIL, base64, datetime, time, string
+import os, random, requests, json, PIL, base64, datetime, time, string, re
 import numpy as np
 from io import BytesIO
 # Load environment variables
@@ -38,6 +38,15 @@ def register():
     if not username or not password or not confirm_password:
         flash('All fields are required!', 'warning')
         return redirect(url_for('landing_register'))
+    
+    if len(username) < 3:
+        flash("Username must be at least 3 characters long.", "danger")
+        return redirect(url_for('landing_register'))
+
+    if not re.match("^[a-zA-Z0-9_]*$", username):
+        flash("Invalid username: Only letters, numbers, and underscores are allowed.", "danger")
+        return redirect(url_for('landing_register'))
+
 
     if password != confirm_password:
         flash('Passwords do not match!', 'danger')
@@ -109,6 +118,10 @@ def home():
 
 @app.route('/generate_letter', methods=['GET', 'POST'])
 def generate_letter():
+    if 'username' not in session:
+        flash('Please log in first.', 'warning')
+        return redirect(url_for('login'))
+    
     if request.method == 'POST':
         # Retrieve and validate the letter
         letter = request.form.get('letter', '').strip()
@@ -177,6 +190,10 @@ def generate_letter():
 
 @app.route('/generate_sentence', methods=['GET', 'POST'])
 def generate_sentence():
+    if 'username' not in session:
+        flash('Please log in first.', 'warning')
+        return redirect(url_for('login'))
+    
     if request.method == 'POST':
         # 1. Retrieve and validate the text
         text = request.form.get('text', '').strip()
@@ -274,6 +291,10 @@ def generate_sentence():
 
 @app.route('/game', methods=['GET', 'POST'])
 def game():
+    if 'username' not in session:
+        flash('Please log in first.', 'warning')
+        return redirect(url_for('login'))
+        
     if request.method == 'GET':
         session['score'] = 0
         session['start_time'] = time.time()

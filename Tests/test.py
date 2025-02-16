@@ -20,12 +20,13 @@ class TestApp(unittest.TestCase):
     # Range Testing
     def test_invalid_username_length(self):
         response = self.client.post('/register', data={
-            'username': 'a',
+            'username': 'a',  # Too short
             'password': 'ValidPass123',
             'confirm_password': 'ValidPass123'
         }, follow_redirects=True)
 
-        self.assertIn(b'Username must be at least', response.data)
+        self.assertIn(b'Username must be at least 3 characters long.', response.data)  # Ensure exact match
+
 
     # Consistency Testing
     def test_duplicate_user_registration(self):
@@ -49,7 +50,9 @@ class TestApp(unittest.TestCase):
             'confirm_password': '<script>alert(1)</script>'
         }, follow_redirects=True)
 
-        self.assertIn(b'Invalid input detected', response.data)
+        self.assertIn(b'Invalid username: Only letters, numbers, and underscores are allowed.', response.data)
+
+
 
     # Expected Failure Testing
     def test_mismatched_passwords(self):
@@ -82,9 +85,25 @@ class TestApp(unittest.TestCase):
         self.assertIn(b'Sentence Generation History', response.data)
 
     def test_generate_letter_prediction(self):
-        response = self.client.post('/generate_letter', data={'letter': 'A'})
+        # Ensure a test user exists
+        self.client.post('/register', data={
+            'username': 'testuser',
+            'password': 'ValidPass123',
+            'confirm_password': 'ValidPass123'
+        }, follow_redirects=True)
+
+        # Log in before making the request
+        self.client.post('/login', data={
+            'username': 'testuser',
+            'password': 'ValidPass123'
+        }, follow_redirects=True)
+
+        # Now send the generate letter request
+        response = self.client.post('/generate_letter', data={'letter': 'A'}, follow_redirects=True)
+        
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'Generating content for letter', response.data)
+        self.assertIn(b'Generating content for letter', response.data) 
+
 
     def test_generate_sentence_prediction(self):
         self.client.post('/register', data={
