@@ -9,7 +9,6 @@ from io import BytesIO
 # Load environment variables
 load_dotenv()
 
-# Ensure Supabase credentials are set
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_API_KEY')
 GENERATOR_URL = os.getenv('GENERATOR_URL')
@@ -17,15 +16,18 @@ GENERATOR_URL = os.getenv('GENERATOR_URL')
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise ValueError("Supabase credentials not found. Check your .env file.")
 
-# Initialize Supabase Client
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Secure session key
 
+# LANDING ROUTE
+
 @app.route('/')
 def landing_register():
     return render_template('landing_register.html')
+
+# REGISTER/LOGIN ROUTES
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -94,12 +96,16 @@ def login():
 
     return render_template('login.html')
 
+# HOME ROUTE
+
 @app.route('/home')
 def home():
     if 'username' not in session:
         flash('Please log in first.', 'warning')
         return redirect(url_for('login'))
     return render_template('home.html')
+
+# GENERATION ROUTES
 
 @app.route('/generate_letter', methods=['GET', 'POST'])
 def generate_letter():
@@ -264,6 +270,8 @@ def generate_sentence():
     # GET request: Show the form
     return render_template("generate_sentence.html")
 
+# GAME ROUTES
+
 @app.route('/game', methods=['GET', 'POST'])
 def game():
     if request.method == 'GET':
@@ -323,7 +331,48 @@ def _generate_new_challenge():
         session['current_image'] = base64.b64encode(buffer.read()).decode('utf-8')
     else:
         flash(f"Error generating image, try again later. ")
-        
+
+# HISTORY ROUTES
+
+@app.route('/history')
+def history_menu():
+    if 'username' not in session:
+        flash('Please log in first.', 'warning')
+        return redirect(url_for('login'))
+    return render_template("history_menu.html")
+
+@app.route('/history/letters')
+def letter_history():
+    if 'username' not in session:
+        flash('Please log in first.', 'warning')
+        return redirect(url_for('login'))
+
+    try:
+        username = session.get("username")
+        response = supabase.table("Letter_gens").select("*").eq("username", username).execute()
+        letter_entries = response.data if response.data else []
+    except Exception as e:
+        flash(f"Error fetching letter history: {str(e)}", "danger")
+        letter_entries = []
+
+    return render_template("letter_history.html", letter_entries=letter_entries)
+
+@app.route('/history/sentences')
+def sentence_history():
+    if 'username' not in session:
+        flash('Please log in first.', 'warning')
+        return redirect(url_for('login'))
+
+    try:
+        username = session.get("username")
+        response = supabase.table("Sentence_gens").select("*").eq("username", username).execute()
+        sentence_entries = response.data if response.data else []
+    except Exception as e:
+        flash(f"Error fetching sentence history: {str(e)}", "danger")
+        sentence_entries = []
+
+    return render_template("sentence_history.html", sentence_entries=sentence_entries)
+
 
 @app.route('/logout')
 def logout():
