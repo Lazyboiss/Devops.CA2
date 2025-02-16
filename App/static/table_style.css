@@ -1,0 +1,117 @@
+/* 
+   table_style.css
+   A black-and-white doodle-esque aesthetic for pages that feature a table
+*/
+
+/* Use !important to override Bootstrap defaults where necessary */
+
+/* Page background with a doodle pattern (replace "doodle-bg.png" with your own) */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+    background: #fff url("doodle-bg.png") repeat !important; /* or remove if no image */
+    font-family: "Poppins", sans-serif !important;
+}
+
+/* Container for the main content: a white card */
+.table-container {
+    width: 90% !important;
+    max-width: 1200px !important;
+    background: #fff !important;
+    border: 2px solid #000 !important;
+    border-radius: 10px !important;
+    margin: 40px auto !important;
+    padding: 30px !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
+    text-align: center !important;
+}
+
+/* Main heading styling */
+.table-container h1 {
+    margin-bottom: 20px !important;
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+}
+
+/* "Back to History Menu" button or any .btn class link */
+.btn {
+    display: inline-block !important;
+    margin-bottom: 20px !important;
+    padding: 12px 24px !important;
+    background: #fff !important;
+    color: #000 !important;
+    border: 2px solid #000 !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease-in-out !important;
+}
+.btn:hover {
+    background: #000 !important; /* invert on hover */
+    color: #fff !important;
+}
+
+/* Container around the table for horizontal spacing */
+.table-container {
+    margin: 40px auto !important;    /* centers container vertically */
+    padding: 30px 60px !important;   /* adds left/right padding (60px) & top/bottom (30px) */
+    max-width: 1200px !important;    /* optional max width */
+    background: #fff !important;
+    border: 2px solid #000 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
+    text-align: center !important;
+}
+
+/* Table itself remains full width within container */
+table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 20px !important;
+}
+
+/* Generated image: bigger thumbnail, scaled proportionally */
+table img {
+    width: 100px !important; /* Increase size as needed */
+    height: auto !important;
+    border: 1px solid #000 !important;
+    border-radius: 4px !important;
+}
+
+
+/* Table header cells */
+table th {
+    background: #000 !important;
+    color: #fff !important;
+    padding: 12px !important;
+    border-bottom: 2px solid #fff !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+}
+
+/* Table body cells */
+table td {
+    padding: 12px !important;
+    border: 1px solid #ccc !important;
+    color: #000 !important;
+    vertical-align: middle !important;
+}
+
+/* If you want NO row striping, remove nth-child striping. 
+   If you DO want subtle striping, uncomment below:
+   tr:nth-child(even) { background: #f9f9f9 !important; }
+*/
+
+/* Image inside table cells */
+table img {
+    border: 1px solid #000 !important;
+    border-radius: 4px !important;
+}
+
+/* "No data" row */
+table td[colspan] {
+    text-align: center !important;
+    color: #555 !important;
+}

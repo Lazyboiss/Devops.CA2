@@ -2,34 +2,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Sentence History</title>
-    <link rel="stylesheet" href="../static/page_styles.css">
+    <link rel="stylesheet" href="../static/table_style.css">
+
 </head>
 <body>
     <h1>Sentence Generation History</h1>
     <a href="/history" class="btn">Back to History Menu</a>
-    <table border="1">
+    <input type="text" id="filterInput" onkeyup="filterTable()" placeholder="Search for sentences...">
+    <table id="historyTable" border="1">
         <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Generated On</th>
-            <th>Sentence</th>
+            <th onclick="sortTable(0)">ID 🔽</th>
+            <th onclick="sortTable(1)">Username 🔽</th>
+            <th onclick="sortTable(2)">Generated On 🔽</th>
+            <th onclick="sortTable(3)">Sentence 🔽</th>
             <th>Generated Image</th>
             <th>Download</th>
         </tr>
-        {% if sentence_entries %}
-            {% for entry in sentence_entries %}
-            <tr>
-                <td>{{ entry.id }}</td>
-                <td>{{ entry.username }}</td>
-                <td>{{ entry.generated_on }}</td>
-                <td>{{ entry.sentence }}</td>
-                <td><img src="data:image/png;base64,{{ entry.generated_image }}" alt="Generated Sentence Image" width="50"></td>
-                <td><a href="data:image/png;base64,{{ entry.generated_image }}" download="sentence_{{ entry.id }}.png">Download</a></td>
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr><td colspan="6">No sentence history found.</td></tr>
-        {% endif %}
+        {% for entry in sentence_entries %}
+        <tr>
+            <td>{{ entry.id }}</td>
+            <td>{{ entry.username }}</td>
+            <td>{{ entry.generated_on[:16].replace('T', ' ') }}</td>
+            <td>{{ entry.sentence }}</td>
+            <td><img src="data:image/png;base64,{{ entry.generated_image }}" width="50"></td>
+            <td><a href="data:image/png;base64,{{ entry.generated_image }}" download="sentence_{{ entry.id }}.png">Download</a></td>
+        </tr>
+        {% endfor %}
     </table>
 </body>
 </html>
