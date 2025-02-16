@@ -133,16 +133,6 @@ body {
     font-size: 12px !important;
     margin-left: 5px !important;
 }
-
-/* Footer text (not used in this snippet, but included) */
-.footer .p-color {
-    color: #ee82ee !important;
-}
-.footer.text-muted {
-    font-size: 10px !important;
-    color: #999 !important;
-}
-
 /* Responsive fix for small screens */
 @media (max-width: 767px) {
     body {

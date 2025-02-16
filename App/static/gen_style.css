@@ -387,3 +387,40 @@ table {
 .back-home-btn:hover .arrow {
     margin-right: 15px; /* Arrow moves on hover */
 }
+.instructions-container {
+    max-width: 800px; /* Adjust as desired */
+    margin: 60px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 8px;
+    color: #333;
+    font-family: "Poppins", sans-serif;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Main title styling */
+  .instructions-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 32px;
+    font-weight: 700;
+  }
+  
+  /* Section headings */
+  .instructions-container h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    margin-top: 24px;
+  }
+  
+  /* Paragraphs, lists */
+  .instructions-container p {
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  
+  .instructions-container li {
+    margin-bottom: 8px; 
+    line-height: 1.5;
+  }
