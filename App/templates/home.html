@@ -18,15 +18,15 @@
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                    <ul class="navbar-nav">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto"> <!-- Ensures it moves to the right -->
                         <li class="nav-item">
                             <a class="nav-link btn btn-danger" href="/logout">Logout</a>
                         </li>
                     </ul>
                 </div>
             </div>
-        </nav>
+        </nav>        
 
         <!-- Main Content -->
         <div class="container-center">
@@ -34,10 +34,50 @@
             <p class="text-white">Choose an option below to get started:</p>
 
             <div class="button-container">
-                <a style="background-color: rgba(255, 255, 255, 0.8);" href="/generate_letter" class="btn btn-option">Generate Letter</a>
-                <a style="background-color: white;" href="/generate_sentence" class="btn btn-option">Generate Sentence</a>
-                <a style="background-color: white;" href="/play_game" class="btn btn-option">Play Game</a>
+                <a style="background-color: rgba(255, 255, 255, 0.8);" href="/generate_letter" class="btn btn-option ">
+                    <span class="btn-text">Generate Letter</span>
+                    <img src="{{ url_for('static', filename='img/genletter.png') }}" class="btn-icon">
+                </a>
+                <a style="background-color: white;" href="/generate_sentence" class="btn btn-option">
+                    <span class="btn-text">Generate Sentence</span>
+                    <img src="{{ url_for('static', filename='img/gensentence.png') }}" class="btn-icon">
+                </a>
+                <a style="background-color: white;" href="/play_game" class="btn btn-option">
+                    <span class="btn-text">Play Game</span>
+                    <img src="{{ url_for('static', filename='img/playgame.png') }}" class="btn-icon">
+                </a> 
             </div>
+            <div class="how-it-works-section">
+                <h2 class="how-it-works-title text-white" onclick="toggleHowItWorks()">How It Works ▼</h2>
+                <div class="how-it-works-content text-white">
+                    <p>
+                        Our platform uses AI-powered technology to generate unique handwritten letters, helping children learn the English alphabet in a fun and interactive way.
+                        <br><br>
+                        Using a special AI model, we create new letter variations that look like real handwriting, making learning more engaging.
+                        <br><br>
+                        Instead of seeing the same letters repeatedly, children can explore different styles, improving their recognition skills and making the learning process more exciting.
+                        <br><br>
+                        Whether through letter generation, sentence building, or interactive games, our goal is to make learning fun, dynamic, and accessible for every child. 🚀
+                    </p>
+                </div>
+            </div>                          
         </div>
+        
+        <script>
+            function toggleHowItWorks() {
+                const content = document.querySelector(".how-it-works-content");
+                const title = document.querySelector(".how-it-works-title");
+            
+                content.classList.toggle("show"); // Toggle visibility
+            
+                // Change arrow direction dynamically
+                if (content.classList.contains("show")) {
+                    title.innerHTML = "How It Works ▲"; // Expanded
+                } else {
+                    title.innerHTML = "How It Works ▼"; // Collapsed
+                }
+            }
+            </script>
+            
     </body>
 </html>
