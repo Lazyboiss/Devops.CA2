@@ -150,9 +150,7 @@ def generate_letter():
                         "generated_image": image_b64
                     }).execute()
 
-                    if response_supabase.data:
-                        flash("Image saved to Supabase successfully!", "success")
-                    else:
+                    if not response_supabase.data:
                         flash(f"Error saving to Supabase: {response_supabase.error}", "danger")
 
                 except Exception as e:
