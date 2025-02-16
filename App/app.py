@@ -3,8 +3,9 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from werkzeug.security import generate_password_hash, check_password_hash
 from supabase import create_client, Client
 from dotenv import load_dotenv
-import os, random, requests, json, PIL, base64, datetime
+import os, random, requests, json, PIL, base64, datetime, time, string
 import numpy as np
+from io import BytesIO
 # Load environment variables
 load_dotenv()
 
@@ -262,6 +263,67 @@ def generate_sentence():
 
     # GET request: Show the form
     return render_template("generate_sentence.html")
+
+@app.route('/game', methods=['GET', 'POST'])
+def game():
+    if request.method == 'GET':
+        session['score'] = 0
+        session['start_time'] = time.time()
+        flash("Game started! You have 30 seconds.", "info")
+        _generate_new_challenge()
+        return render_template("game.html")
+
+    elapsed = time.time() - session.get('start_time', 0)
+    if elapsed > 30:
+        final_score = session.get('score', 0)
+        flash(f"Time's up! Final score: {final_score}", "info")
+        return render_template("game_over.html", final_score=final_score)
+
+    user_guess = request.form.get('guess', '').strip().upper()
+    current_letter = session.get('current_letter', '')
+
+    if user_guess == current_letter:
+        session['score'] = session.get('score', 0) + 1500
+        flash("Correct! +1500 points", "success")
+    else:
+        session['score'] = session.get('score', 0) - 500
+        flash(f"Wrong! The letter was {current_letter}. -500 points", "danger")
+
+    _generate_new_challenge()
+    return render_template("game.html")
+
+def _generate_new_challenge():
+    letter = random.choice(string.ascii_uppercase)
+    session['current_letter'] = letter
+
+    latent_vector = [round(random.random(), 2) for _ in range(100)]
+    letter_index = ord(letter) - ord('A')
+    payload = {
+                "instances": [
+                    {
+                        "keras_tensor_19": [letter_index],
+                        "keras_tensor_23": latent_vector
+                    }
+                ]
+            }
+
+    response = requests.post(GENERATOR_URL, json=payload)
+
+    if response.status_code == 200:
+        prediction = response.json()
+        image_data = prediction["predictions"][0]
+
+        # Convert array -> numpy -> PIL image -> raw bytes
+        image_data = np.array(image_data).reshape(28, 28)
+        image_data = ((image_data + 1) * 127.5).astype(np.uint8)  # Rescale [-1..1] -> [0..255]
+        image = PIL.Image.fromarray(image_data)
+        buffer = BytesIO()
+        image.save(buffer, format="PNG")
+        buffer.seek(0)
+        session['current_image'] = base64.b64encode(buffer.read()).decode('utf-8')
+    else:
+        flash(f"Error generating image, try again later. ")
+        
 
 @app.route('/logout')
 def logout():
