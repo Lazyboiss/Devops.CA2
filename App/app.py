@@ -1,15 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+import PIL.Image
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from supabase import create_client, Client
 from dotenv import load_dotenv
-import os
-
+import os, random, requests, json, PIL, base64, datetime
+import numpy as np
 # Load environment variables
 load_dotenv()
 
 # Ensure Supabase credentials are set
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_API_KEY')
+GENERATOR_URL = os.getenv('GENERATOR_URL')
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise ValueError("Supabase credentials not found. Check your .env file.")
@@ -101,21 +103,72 @@ def home():
 @app.route('/generate_letter', methods=['GET', 'POST'])
 def generate_letter():
     if request.method == 'POST':
-        # Grab the letter from the form
+        # Retrieve and validate the letter
         letter = request.form.get('letter', '').strip()
-        
-        # Server-side validation
         if len(letter) == 1 and letter.isalpha() and letter.isupper():
-            # e.g., do something with the letter
             flash(f"Generating content for letter: {letter}", "success")
-            # Possibly redirect or render a result template
-            return redirect(url_for('generate_letter'))
+
+            latent_vector = [round(random.random(), 2) for _ in range(100)]
+            letter_index = ord(letter) - ord('A') + 1
+
+            payload = {
+                "instances": [
+                    {
+                        "keras_tensor_19": [letter_index],
+                        "keras_tensor_23": latent_vector
+                    }
+                ]
+            }
+
+            response = requests.post(GENERATOR_URL, json=payload)
+
+            if response.status_code == 200:
+                prediction = response.json()
+                image_data = prediction["predictions"][0]
+
+                # Convert array -> numpy -> PIL image -> raw bytes
+                image_data = np.array(image_data).reshape(28, 28)
+                image_data = ((image_data + 1) * 127.5).astype(np.uint8)  # Rescale [-1..1] -> [0..255]
+                image = PIL.Image.fromarray(image_data)
+
+                from io import BytesIO
+                buffer = BytesIO()
+                image.save(buffer, format="PNG")
+                buffer.seek(0)
+                image_bytes = buffer.read()
+
+                # Base64-encode before storing in a text column
+                import base64
+                image_b64 = base64.b64encode(image_bytes).decode("utf-8")
+
+                # Insert into Letter_Gen (text column for generated_image)
+                username = session.get("username", "Anonymous")
+                try:
+                    response_supabase = supabase.table("Letter_gens").insert({
+                        "username": username,
+                        "letter": letter,
+                        "generated_image": image_b64
+                    }).execute()
+
+                    if response_supabase.data:
+                        flash("Image saved to Supabase successfully!", "success")
+                    else:
+                        flash(f"Error saving to Supabase: {response_supabase.error}", "danger")
+
+                except Exception as e:
+                    flash(f"Error storing in Supabase: {str(e)}", "danger")
+
+                # Pass the base64 string to the template
+                return render_template("generate_letter.html", image_data=image_b64)
+            else:
+                flash(f"Error generating image: {response.text}", "danger")
+                return redirect(url_for("generate_letter"))
         else:
             flash("Please enter exactly one uppercase letter (A–Z).", "danger")
-            return redirect(url_for('generate_letter'))
+            return redirect(url_for("generate_letter"))
 
-    # If GET request, simply serve the template
-    return render_template('generate_letter.html')
+    # GET request: Serve the form
+    return render_template("generate_letter.html")
 
 @app.route('/logout')
 def logout():

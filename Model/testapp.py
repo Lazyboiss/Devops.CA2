@@ -35,7 +35,6 @@ def generate():
     if response.status_code == 200:
         # If the request was successful, process the response
 
-        print(f'RAW RESPONSE JSON: {type(response.json())}')
         prediction = response.json()
         image_data = prediction['predictions'][0]
 
