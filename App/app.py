@@ -106,7 +106,6 @@ def generate_letter():
         # Retrieve and validate the letter
         letter = request.form.get('letter', '').strip()
         if len(letter) == 1 and letter.isalpha() and letter.isupper():
-            flash(f"Generating content for letter: {letter}", "success")
 
             latent_vector = [round(random.random(), 2) for _ in range(100)]
             letter_index = ord(letter) - ord('A')
