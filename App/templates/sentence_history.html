@@ -2,28 +2,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Sentence History</title>
-    <link rel="stylesheet" href="../static/page_styles.css">
-    <script>
-        function sortTable(n) {
-            let table = document.getElementById("historyTable");
-            let rows = Array.from(table.rows).slice(1);
-            let sortedRows = rows.sort((a, b) => {
-                let aText = a.cells[n].innerText;
-                let bText = b.cells[n].innerText;
-                return aText.localeCompare(bText);
-            });
-            table.tBodies[0].append(...sortedRows);
-        }
+    <link rel="stylesheet" href="../static/table_style.css">
 
-        function filterTable() {
-            let filter = document.getElementById("filterInput").value.toUpperCase();
-            let rows = document.querySelectorAll("#historyTable tbody tr");
-            rows.forEach(row => {
-                let text = row.innerText.toUpperCase();
-                row.style.display = text.includes(filter) ? "" : "none";
-            });
-        }
-    </script>
 </head>
 <body>
     <h1>Sentence Generation History</h1>

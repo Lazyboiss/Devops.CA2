@@ -1,13 +1,25 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>History Menu</title>
-    <link rel="stylesheet" href="../static/page_styles.css">
+    <link rel="stylesheet" href="../static/gen_style.css">
 </head>
 <body>
-    <h1>View Your Generation History</h1>
-    <a href="/history/letters" class="btn">View Letter History</a>
-    <a href="/history/sentences" class="btn">View Sentence History</a>
-    <a href="/home" class="btn">Back to Home</a>
+    <!-- White card container -->
+    <div class="history-menu-container">
+        <h1>View Your Generation History</h1>
+        
+        <!-- Optional: show any flash messages here if needed -->
+        
+        <!-- Button group or direct links -->
+        <div class="button-group">
+            <a href="/history/letters" class="btn-view">View Letter History</a>
+            <a href="/history/sentences" class="btn-view">View Sentence History</a>
+            <a href="/home" class="back-home-btn">
+                <span class="arrow">&larr;</span> Back to Homepage
+            </a>
+        </div>
+    </div>
 </body>
 </html>

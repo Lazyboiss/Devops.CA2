@@ -323,3 +323,67 @@ body{
     box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
 }
 
+table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 20px !important;
+}
+/* Main container for the page content */
+.history-container {
+    background: #fff !important; /* White background for contrast */
+    color: #000 !important;      /* Black text inside container */
+    width: 90% !important;
+    margin-top: 50% !important;
+    max-width: 1000px !important;
+    border-radius: 10px !important;
+    padding: 30px !important;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25) !important;
+    text-align: center !important;
+    margin: 40px auto !important;
+}
+
+/* Main container for the page content */
+.history-menu-container {
+    background: #fff !important; /* White background for contrast */
+    color: #000 !important;      /* Black text inside container */
+    width: 90% !important;
+    margin-top: 50% !important;
+    max-width: 1000px !important;
+    border-radius: 10px !important;
+    padding: 30px !important;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25) !important;
+    text-align: center !important;
+    margin: 40px auto !important;
+}
+
+/* Back Button */
+.btn-view {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    text-decoration: none;
+    color: #333 !important;
+    border: 2px solid #333 !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease-in-out !important;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+    margin-right: 10px;
+}
+.btn-view:hover {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    transform: translateY(-5px); /* Subtle left shift */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
+}
+.back-home-btn .arrow {
+    margin-right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    transition: margin-right 0.3s ease-in-out;
+}
+
+.back-home-btn:hover .arrow {
+    margin-right: 15px; /* Arrow moves on hover */
+}
