@@ -3,6 +3,6 @@ requests==2.26.0
 supabase
 python-dotenv
 selenium==4.28.1
-
+PIL
 # for RPA testing on chrome
 webdriver-manager
