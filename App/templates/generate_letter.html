@@ -15,7 +15,6 @@
     </head>
     <body class="bg-light">
         <div class="container my-5">
-            <h1 class="mb-4">Generate Letter</h1>
 
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -29,6 +28,7 @@
             <div class="row">
                 <!-- Left: Form Section -->
                 <div class="col-md-6 form-section">
+                    <h1 class="mb-4">Generate Letter</h1>
                     <form action="/generate_letter" method="POST">
                         <div class="mb-3">
                             <label for="letter" class="form-label">Enter an uppercase letter:</label>
@@ -54,8 +54,14 @@
 
                 <!-- Right: Image Section -->
                 <div class="col-md-5 image-section">
-                    <p><strong>Generated Image:</strong></p>
-                    <div class="generated-image">[Image Here]</div>
+                    <p class="gen_image_title"><strong>Generated Image:</strong></p>
+                    <div class="generated-image">
+                        {% if image_url %}
+                            <img src="{{ image_url }}" alt="Generated Letter" style="width: 120px; height: 120px; border: 2px solid black;">
+                        {% else %}
+                            <p>No image generated yet.</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
