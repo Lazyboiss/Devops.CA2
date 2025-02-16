@@ -272,6 +272,13 @@ def generate_sentence():
 
 # GAME ROUTES
 
+@app.route('/gameinstructions')
+def gameinstructions():
+    if 'username' not in session:
+        flash('Please log in first.', 'warning')
+        return redirect(url_for('login'))
+    return render_template("gameinstructions.html")
+
 @app.route('/game', methods=['GET', 'POST'])
 def game():
     if request.method == 'GET':
