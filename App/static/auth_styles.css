@@ -16,7 +16,7 @@ html, body {
     align-items: center !important;
 
     /* Light monotone gradient, e.g. top-left to bottom-right */
-    background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+    background: linear-gradient(360deg, #bafffc, #ffffff);
 }
 
 
