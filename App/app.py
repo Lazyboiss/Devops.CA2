@@ -98,6 +98,25 @@ def home():
         return redirect(url_for('login'))
     return render_template('home.html')
 
+@app.route('/generate_letter', methods=['GET', 'POST'])
+def generate_letter():
+    if request.method == 'POST':
+        # Grab the letter from the form
+        letter = request.form.get('letter', '').strip()
+        
+        # Server-side validation
+        if len(letter) == 1 and letter.isalpha() and letter.isupper():
+            # e.g., do something with the letter
+            flash(f"Generating content for letter: {letter}", "success")
+            # Possibly redirect or render a result template
+            return redirect(url_for('generate_letter'))
+        else:
+            flash("Please enter exactly one uppercase letter (A–Z).", "danger")
+            return redirect(url_for('generate_letter'))
+
+    # If GET request, simply serve the template
+    return render_template('generate_letter.html')
+
 @app.route('/logout')
 def logout():
     session.pop('username', None)

@@ -3,7 +3,7 @@ services:
     image: tensorflow/serving:latest  # Use TensorFlow Serving image
     container_name: generator_serving
     volumes:
-      - ./ACGAN_Gen_SavedModel/1:/models/generator/1  # Model directory with versioning
+      - ./Model/ACGAN_Gen_SavedModel/1:/models/generator/1  # Model directory with versioning
     environment:
       - MODEL_NAME=generator  # Specify model name to TensorFlow Serving
     ports:
@@ -15,23 +15,11 @@ services:
     image: tensorflow/serving:latest  # Use TensorFlow Serving image
     container_name: discriminator_serving
     volumes:
-      - ./ACGAN_Disc_SavedModel/1:/models/discriminator/1  # Model directory with versioning
+      - ./Model/ACGAN_Disc_SavedModel/1:/models/discriminator/1  # Model directory with versioning
     environment:
       - MODEL_NAME=discriminator  # Specify model name to TensorFlow Serving
     ports:
       - "8502:8501"  # Expose TensorFlow Serving port for the discriminator model
-    networks:
-      - acgan_network
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile.app  # Dockerfile for your Flask app
-    ports:
-      - "5000:5000"  # Expose Flask app port
-    depends_on:
-      - generator  # Ensure generator is running before Flask app
-      - discriminator
     networks:
       - acgan_network
 
