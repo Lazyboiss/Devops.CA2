@@ -54,14 +54,12 @@
 
                 <!-- Right: Image Section -->
                 <div class="col-md-5 image-section">
-                    <p class="gen_image_title"><strong>Generated Image:</strong></p>
-                    <div class="generated-image">
-                        {% if image_url %}
-                            <img src="{{ image_url }}" alt="Generated Letter" style="width: 120px; height: 120px; border: 2px solid black;">
-                        {% else %}
-                            <p>No image generated yet.</p>
-                        {% endif %}
-                    </div>
+                    <p class="gen_image_title"><strong>Generated Letter:</strong></p>                    
+                    {% if image_data %}
+                        <div class="mb-3">
+                            <img class="generated-image" src="data:image/png;base64,{{ image_data }}">
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
