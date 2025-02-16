@@ -142,7 +142,7 @@ def generate_letter():
                 image_b64 = base64.b64encode(image_bytes).decode("utf-8")
 
                 # Insert into Letter_Gen (text column for generated_image)
-                username = session.get("username", "Anonymous")
+                username = session.get("username")
                 try:
                     response_supabase = supabase.table("Letter_gens").insert({
                         "username": username,
