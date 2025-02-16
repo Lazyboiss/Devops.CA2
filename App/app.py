@@ -109,7 +109,7 @@ def generate_letter():
             flash(f"Generating content for letter: {letter}", "success")
 
             latent_vector = [round(random.random(), 2) for _ in range(100)]
-            letter_index = ord(letter) - ord('A') + 1
+            letter_index = ord(letter) - ord('A')
 
             payload = {
                 "instances": [
@@ -169,6 +169,101 @@ def generate_letter():
 
     # GET request: Serve the form
     return render_template("generate_letter.html")
+
+@app.route('/generate_sentence', methods=['GET', 'POST'])
+def generate_sentence():
+    if request.method == 'POST':
+        # 1. Retrieve and validate the text
+        text = request.form.get('text', '').strip()
+        if not text:
+            flash("Please enter some text.", "danger")
+            return redirect(url_for('generate_sentence'))
+        if len(text) > 20:
+            flash("Text cannot exceed 20 characters.", "danger")
+            return redirect(url_for('generate_sentence'))
+
+        char_images = []
+
+        for ch in text:
+            if ch == ' ':
+                # Create a black 28x28 image
+                black_img = np.zeros((28, 28), dtype=np.uint8)
+                pil_img = PIL.Image.fromarray(black_img)
+                char_images.append(pil_img)
+            else:
+                # Validate uppercase letter if desired
+                if not (ch.isalpha() and ch.isupper()):
+                    flash("Only uppercase letters and spaces allowed!", "danger")
+                    return redirect(url_for('generate_sentence'))
+
+                # Random latent vector for each character
+                latent_vector = [round(random.random(), 2) for _ in range(100)]
+                letter_index = ord(ch) - ord('A')
+
+                payload = {
+                    "instances": [
+                        {
+                            "keras_tensor_19": [letter_index],
+                            "keras_tensor_23": latent_vector
+                        }
+                    ]
+                }
+
+                response = requests.post(GENERATOR_URL, json=payload)
+                if response.status_code != 200:
+                    flash(f"Error generating letter '{ch}': {response.text}", "danger")
+                    return redirect(url_for('generate_sentence'))
+
+                # Convert array -> numpy -> PIL
+                prediction = response.json()
+                image_data = prediction["predictions"][0]
+                image_data = np.array(image_data).reshape(28, 28)
+                image_data = ((image_data + 1) * 127.5).astype(np.uint8)  # scale [-1..1]->[0..255]
+                pil_img = PIL.Image.fromarray(image_data)
+                char_images.append(pil_img)
+
+        # 3. Stitch images side by side
+        #    The final width is 28 * number_of_chars, height stays 28
+        total_chars = len(char_images)
+        final_width = 28 * total_chars
+        final_image = PIL.Image.new("L", (final_width, 28))  # "L" mode for 8-bit grayscale
+
+        x_offset = 0
+        for img in char_images:
+            final_image.paste(img, (x_offset, 0))
+            x_offset += 28
+
+        # 4. Convert the final image to base64
+        from io import BytesIO
+        buffer = BytesIO()
+        final_image.save(buffer, format="PNG")
+        buffer.seek(0)
+        image_bytes = buffer.read()
+
+        import base64
+        image_b64 = base64.b64encode(image_bytes).decode("utf-8")
+
+        # 5. Insert into your table (e.g., Sentence_gens)
+        username = session.get("username", "Anonymous")
+        try:
+            response_supabase = supabase.table("Sentence_gens").insert({
+                "username": username,
+                "sentence": text,
+                "generated_image": image_b64
+            }).execute()
+
+            if response_supabase.data:
+                flash("Sentence image saved to Supabase successfully!", "success")
+            else:
+                flash(f"Error saving to Supabase: {response_supabase.error}", "danger")
+        except Exception as e:
+            flash(f"Error storing in Supabase: {str(e)}", "danger")
+
+        # 6. Return the final image to the template
+        return render_template("generate_sentence.html", image_data=image_b64)
+
+    # GET request: Show the form
+    return render_template("generate_sentence.html")
 
 @app.route('/logout')
 def logout():
