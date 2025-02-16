@@ -1,0 +1,140 @@
+
+/* Main container for the page content */
+.history-container {
+    background: #fff !important; /* White background for contrast */
+    color: #000 !important;      /* Black text inside container */
+    width: 90% !important;
+    margin-top: 50% !important;
+    max-width: 1000px !important;
+    border-radius: 10px !important;
+    padding: 30px !important;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25) !important;
+    text-align: center !important;
+    margin: 40px auto !important;
+}
+
+/* Page Title */
+.history-container h1 {
+    margin-bottom: 20px !important;
+    font-size: 32px !important;
+    font-weight: 700 !important;
+}
+
+.back-home-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    text-decoration: none;
+    color: #333 !important;
+    border: 2px solid #333 !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease-in-out !important;
+    position: absolute !important;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.back-home-btn:hover {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    transform: translateX(-5px); /* Subtle left shift */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.back-home-btn .arrow {
+    margin-right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    transition: margin-right 0.3s ease-in-out;
+}
+
+.back-home-btn:hover .arrow {
+    margin-right: 15px; /* Arrow moves on hover */
+}
+
+/* Table styling: no zebra striping, uniform rows */
+table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-top: 20px !important;
+}
+
+/* Table header */
+table th {
+    background: #222 !important;
+    color: #fff !important;
+    padding: 12px !important;
+    font-weight: 700 !important;
+    border-bottom: 2px solid #fff !important;
+}
+
+/* Table cells */
+table td {
+    padding: 12px !important;
+    border-bottom: 1px solid #ccc !important;
+    color: #ffffff !important; /* Make text black inside table rows */
+}
+
+/* "No letter history found" row */
+table td[colspan="6"] {
+    text-align: center !important;
+    font-weight: 500 !important;
+    color: #999 !important;
+}
+
+/* Image styling inside table cells */
+table img {
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+}
+
+/* Centered container with a white background card */
+.history-menu-container {
+    background: #fff !important; /* White card */
+    color: #000 !important;      /* Black text */
+    width: 90% !important;
+    max-width: 600px !important;
+    margin: 60px auto !important;
+    padding: 40px !important;
+    border-radius: 10px !important;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25) !important;
+    text-align: center !important;
+}
+
+/* Main heading styling */
+.history-menu-container h1 {
+    margin-bottom: 30px !important;
+    font-size: 32px !important;
+    font-weight: 700 !important;
+}
+
+/* Button group container (optional) */
+.button-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    align-items: center !important;
+}
+
+/* Buttons: black border, modern look */
+.btn {
+    display: inline-block !important;
+    padding: 12px 24px !important;
+    margin: 10px !important;
+    background: #000 !important;   /* black button */
+    color: #fff !important;        /* white text */
+    border: 2px solid #fff !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* Hover effect for buttons */
+.btn:hover {
+    background: #fff !important;   /* white background */
+    color: #000 !important;        /* black text */
+}
