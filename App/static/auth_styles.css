@@ -1,134 +1,170 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
+/* Global reset & font */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    font-family: 'Poppins', sans-serif !important;
 }
 
+/* Subtle background for the entire page */
+body {
+    background: #f7f7f7 !important;
+}
+
+/* Outer container for the page */
 .container {
-    margin: 50px auto;
+    margin: 50px auto !important;
 }
 
+/* The main "card" or body that holds the image & form */
 .body {
-    position: relative;
-    width: 720px;
-    height: 500px; /* Increased height to ensure menu is fully visible */
-    margin: 20px auto;
-    border: 1px solid #dddd;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-    display: flex;
-    flex-direction: row;
+    position: relative !important;
+    width: 720px !important;
+    height: 500px !important; /* Enough height for content */
+    margin: 20px auto !important;
+    border: 1px solid #ddd !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    background: #fff !important;
 }
 
+/* Left column: full-height image */
 .box-1 {
-    width: 50%;
-    height: 100%;
-    display: flex;
+    width: 50% !important;
+    height: 100% !important;
+    display: flex !important;
 }
-
 .box-1 img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
 }
 
+/* Right column: form content */
 .box-2 {
-    width: 50%;
-    padding: 10px;
-    overflow-y: auto; /* Enables vertical scrollbar if content exceeds height */
-    max-height: 100%;
+    width: 50% !important;
+    padding: 20px !important;
+    overflow-y: auto !important; /* Scroll if content grows too tall */
+    max-height: 100% !important;
 }
 
+/* Heading style */
 .h-1 {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    margin-bottom: 8px !important;
 }
 
+/* Sub-heading / small text */
 .text-muted {
-    font-size: 14px;
+    font-size: 14px !important;
+    color: #666 !important;
+    margin-bottom: 16px !important;
 }
 
+/* Minor styling for the close icon if you use it */
+.fas.fa-times {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    height: 20px !important;
+    width: 20px !important;
+    background-color: #f3cff379 !important;
+    font-size: 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: color 0.2s ease-in-out !important;
+}
+.fas.fa-times:hover {
+    color: #ff0000 !important;
+}
+
+/* Link "boxes" (not used in this example but included) */
 .container .box {
-    width: 100px;
-    height: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid transparent;
-    text-decoration: none;
-    color: #615f5fdd;
+    width: 100px !important;
+    height: 100px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 2px solid transparent !important;
+    text-decoration: none !important;
+    color: #615f5fdd !important;
+    transition: border-color 0.3s ease-in-out !important;
 }
-
+.box:hover {
+    border: 2px solid #ee82ee !important;
+}
 .box:active,
 .box:visited {
-    border: 2px solid #ee82ee;
+    border: 2px solid #ee82ee !important;
 }
 
-.box:hover {
-    border: 2px solid #ee82ee;
+/* Form Label Tweaks */
+.form-label {
+    font-weight: 500 !important;
 }
 
+/* Buttons: text color & subtle style */
 .btn.btn-primary {
-    background-color: transparent;
-    color: #ee82ee;
-    border: 0px;
-    padding: 0;
-    font-size: 14px;
+    background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+    color: #fff !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    border-radius: 6px !important;
+    transition: background 0.3s ease-in-out !important;
+}
+.btn.btn-primary:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #ffcbcb, #ffdda7); /* Softer pastel shades */
+    box-shadow: 6px 6px 20px rgba(255, 170, 170, 0.5);
 }
 
+/* For the "login" / "register" link button */
 .btn.btn-primary .fas.fa-chevron-right {
-    font-size: 12px;
+    font-size: 12px !important;
+    margin-left: 5px !important;
 }
 
+/* Footer text (not used in this snippet, but included) */
 .footer .p-color {
-    color: #ee82ee;
+    color: #ee82ee !important;
 }
-
 .footer.text-muted {
-    font-size: 10px;
+    font-size: 10px !important;
+    color: #999 !important;
 }
 
-.fas.fa-times {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    height: 20px;
-    width: 20px;
-    background-color: #f3cff379;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.fas.fa-times:hover {
-    color: #ff0000;
-}
-
-@media (max-width:767px) {
+/* Responsive fix for small screens */
+@media (max-width: 767px) {
     body {
-        padding: 10px;
+        padding: 10px !important;
     }
-
     .body {
-        width: 100%;
-        height: 100%;
-        flex-direction: column;
+        width: 100% !important;
+        height: auto !important;
+        flex-direction: column !important;
     }
-
     .box-1 {
-        width: 100%;
-        height: 50%;
+        width: 100% !important;
+        height: 240px !important;
     }
-
+    .box-1 img {
+        height: 100% !important;
+        object-fit: cover !important;
+    }
     .box-2 {
-        width: 100%;
-        height: 50%;
-        overflow-y: auto;
+        width: 100% !important;
+        height: auto !important;
+        overflow-y: visible !important;
+        padding: 20px !important;
     }
 }
