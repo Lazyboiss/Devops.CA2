@@ -45,7 +45,7 @@ class TestApp(unittest.TestCase):
     # Unexpected Failure Testing
     def test_unexpected_input(self):
         response = self.client.post('/register', data={
-            'username': 'validuser',
+            'username': 'invaliduser%$^#&@',
             'password': '<script>alert(1)</script>',
             'confirm_password': '<script>alert(1)</script>'
         }, follow_redirects=True)
