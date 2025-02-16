@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Sentence History</title>
+    <title>Letter History</title>
     <link rel="stylesheet" href="../static/table_style.css">
     <script>
         function sortTable(n) {
@@ -26,26 +26,26 @@
     </script>
 </head>
 <body>
-    <h1>Sentence Generation History</h1>
+    <h1>Letter Generation History</h1>
     <a href="/history" class="btn">Back to History Menu</a>
-    <input type="text" id="filterInput" onkeyup="filterTable()" placeholder="Search for sentences...">
+    <input type="text" id="filterInput" onkeyup="filterTable()" placeholder="Search for letters...">
     <table id="historyTable" border="1">
         <tr>
             <th onclick="sortTable(0)">ID 🔽</th>
             <th onclick="sortTable(1)">Username 🔽</th>
             <th onclick="sortTable(2)">Generated On 🔽</th>
-            <th onclick="sortTable(3)">Sentence 🔽</th>
+            <th onclick="sortTable(3)">Letter 🔽</th>
             <th>Generated Image</th>
             <th>Download</th>
         </tr>
-        {% for entry in sentence_entries %}
+        {% for entry in letter_entries %}
         <tr>
             <td>{{ entry.id }}</td>
             <td>{{ entry.username }}</td>
             <td>{{ entry.generated_on[:16].replace('T', ' ') }}</td>
-            <td>{{ entry.sentence }}</td>
+            <td>{{ entry.letter }}</td>
             <td><img src="data:image/png;base64,{{ entry.generated_image }}" width="50"></td>
-            <td><a href="data:image/png;base64,{{ entry.generated_image }}" download="sentence_{{ entry.id }}.png">Download</a></td>
+            <td><a href="data:image/png;base64,{{ entry.generated_image }}" download="letter_{{ entry.id }}.png">Download</a></td>
         </tr>
         {% endfor %}
     </table>
