@@ -8,15 +8,17 @@
     font-family: 'Poppins', sans-serif !important;
 }
 
-/* Subtle background for the entire page */
-body {
-    background: #f7f7f7 !important;
+html, body {
+    height: 100% !important;
+    margin: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+
+    /* Light monotone gradient, e.g. top-left to bottom-right */
+    background: linear-gradient(135deg, #ffafbd, #ffc3a0);
 }
 
-/* Outer container for the page */
-.container {
-    margin: 50px auto !important;
-}
 
 /* The main "card" or body that holds the image & form */
 .body {
@@ -24,10 +26,10 @@ body {
     width: 720px !important;
     height: 500px !important; /* Enough height for content */
     margin: 20px auto !important;
-    border: 1px solid #ddd !important;
-    border-radius: 18px !important;
+    border-radius: 10px !important;
+    border: none !important; /* or border:1px solid #ddd if you prefer a thin border */
     overflow: hidden !important;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px !important;
+    box-shadow: rgba(0, 1, 1, 3) 0px 3px 8px !important;
     display: flex !important;
     flex-direction: row !important;
     background: #fff !important;
