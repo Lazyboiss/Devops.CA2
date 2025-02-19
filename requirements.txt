@@ -6,5 +6,6 @@ selenium==4.28.1
 pillow
 Werkzeug==2.3.7
 numpy
+pillow
 # for RPA testing on chrome
 webdriver-manager
