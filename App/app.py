@@ -190,6 +190,20 @@ def generate_letter():
                     if not response.data:
                         flash(f'Error loading from supabase: {response.error}', 'danger')
                     image_b64 = response.data[0]['image']
+                    try:
+                        username = session.get('username')
+                        response_supabase = supabase.table("Letter_gens").insert({
+                            "username": username,
+                            "letter": letter,
+                            "generated_image": image_b64
+                        }).execute()
+
+                        if not response_supabase.data:
+                            flash(f"Error saving to Supabase: {response_supabase.error}", "danger")
+
+                    except Exception as e:
+                        flash(f"Error storing in Supabase: {str(e)}", "danger")
+                        
                     return render_template("generate_letter.html", image_data=image_b64)
                 except Exception as e:
                     flash(f'Error loading image: {e}', 'danger')
