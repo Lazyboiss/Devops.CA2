@@ -12,6 +12,7 @@ load_dotenv()
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_KEY = os.getenv('SUPABASE_API_KEY')
 GENERATOR_URL = os.getenv('GENERATOR_URL')
+ENVIRONMENT = os.getenv('ENVIRONMENT')
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise ValueError("Supabase credentials not found. Check your .env file.")
@@ -131,60 +132,70 @@ def generate_letter():
             latent_vector = [round(random.random(), 2) for _ in range(100)]
             letter_index = ord(letter) - ord('A')
 
-            payload = {
-                "instances": [
-                    {
-                        "keras_tensor_19": [letter_index],
-                        "keras_tensor_23": latent_vector
-                    }
-                ]
-            }
+            if ENVIRONMENT == 'production':
+                payload = {
+                    "instances": [
+                        {
+                            "keras_tensor_19": [letter_index],
+                            "keras_tensor_23": latent_vector
+                        }
+                    ]
+                }
 
-            response = requests.post(GENERATOR_URL, json=payload)
+                response = requests.post(GENERATOR_URL, json=payload)
 
-            if response.status_code == 200:
-                prediction = response.json()
-                image_data = prediction["predictions"][0]
+                if response.status_code == 200:
+                    prediction = response.json()
+                    image_data = prediction["predictions"][0]
 
-                # Convert array -> numpy -> PIL image -> raw bytes
-                image_data = np.array(image_data).reshape(28, 28)
-                image_data = ((image_data + 1) * 127.5).astype(np.uint8)  # Rescale [-1..1] -> [0..255]
-                image = PIL.Image.fromarray(image_data)
+                    # Convert array -> numpy -> PIL image -> raw bytes
+                    image_data = np.array(image_data).reshape(28, 28)
+                    image_data = ((image_data + 1) * 127.5).astype(np.uint8)  # Rescale [-1..1] -> [0..255]
+                    image = PIL.Image.fromarray(image_data)
 
-                from io import BytesIO
-                buffer = BytesIO()
-                image.save(buffer, format="PNG")
-                buffer.seek(0)
-                image_bytes = buffer.read()
+                    from io import BytesIO
+                    buffer = BytesIO()
+                    image.save(buffer, format="PNG")
+                    buffer.seek(0)
+                    image_bytes = buffer.read()
 
-                # Base64-encode before storing in a text column
-                import base64
-                image_b64 = base64.b64encode(image_bytes).decode("utf-8")
+                    # Base64-encode before storing in a text column
+                    import base64
+                    image_b64 = base64.b64encode(image_bytes).decode("utf-8")
 
-                # Insert into Letter_Gen (text column for generated_image)
-                username = session.get("username")
-                try:
-                    response_supabase = supabase.table("Letter_gens").insert({
-                        "username": username,
-                        "letter": letter,
-                        "generated_image": image_b64
-                    }).execute()
+                    # Insert into Letter_Gen (text column for generated_image)
+                    username = session.get("username")
+                    try:
+                        response_supabase = supabase.table("Letter_gens").insert({
+                            "username": username,
+                            "letter": letter,
+                            "generated_image": image_b64
+                        }).execute()
 
-                    if not response_supabase.data:
-                        flash(f"Error saving to Supabase: {response_supabase.error}", "danger")
+                        if not response_supabase.data:
+                            flash(f"Error saving to Supabase: {response_supabase.error}", "danger")
 
-                except Exception as e:
-                    flash(f"Error storing in Supabase: {str(e)}", "danger")
+                    except Exception as e:
+                        flash(f"Error storing in Supabase: {str(e)}", "danger")
 
-                # Pass the base64 string to the template
-                return render_template("generate_letter.html", image_data=image_b64)
+                    # Pass the base64 string to the template
+                    return render_template("generate_letter.html", image_data=image_b64)
+                else:
+                    flash(f"Error generating image: {response.text}", "danger")
+                    return redirect(url_for("generate_letter"))
             else:
-                flash(f"Error generating image: {response.text}", "danger")
-                return redirect(url_for("generate_letter"))
+                letter_index = letter_index + 1
+                try:
+                    response = supabase.table("Letters").select('*').eq("id", letter_index).execute()
+                    if not response.data:
+                        flash(f'Error loading from supabase: {response.error}', 'danger')
+                    image_b64 = response.data[0]['image']
+                    return render_template("generate_letter.html", image_data=image_b64)
+                except Exception as e:
+                    flash(f'Error loading image: {e}', 'danger')
         else:
             flash("Please enter exactly one uppercase letter (A–Z).", "danger")
             return redirect(url_for("generate_letter"))
-
     # GET request: Serve the form
     return render_template("generate_letter.html")
 
@@ -222,27 +233,43 @@ def generate_sentence():
                 latent_vector = [round(random.random(), 2) for _ in range(100)]
                 letter_index = ord(ch) - ord('A')
 
-                payload = {
-                    "instances": [
-                        {
-                            "keras_tensor_19": [letter_index],
-                            "keras_tensor_23": latent_vector
-                        }
-                    ]
-                }
+                if ENVIRONMENT == 'production':
+                    payload = {
+                        "instances": [
+                            {
+                                "keras_tensor_19": [letter_index],
+                                "keras_tensor_23": latent_vector
+                            }
+                        ]
+                    }
 
-                response = requests.post(GENERATOR_URL, json=payload)
-                if response.status_code != 200:
-                    flash(f"Error generating letter '{ch}': {response.text}", "danger")
-                    return redirect(url_for('generate_sentence'))
+                    response = requests.post(GENERATOR_URL, json=payload)
+                    if response.status_code != 200:
+                        flash(f"Error generating letter '{ch}': {response.text}", "danger")
+                        return redirect(url_for('generate_sentence'))
 
-                # Convert array -> numpy -> PIL
-                prediction = response.json()
-                image_data = prediction["predictions"][0]
-                image_data = np.array(image_data).reshape(28, 28)
-                image_data = ((image_data + 1) * 127.5).astype(np.uint8)  # scale [-1..1]->[0..255]
-                pil_img = PIL.Image.fromarray(image_data)
-                char_images.append(pil_img)
+                    # Convert array -> numpy -> PIL
+                    prediction = response.json()
+                    image_data = prediction["predictions"][0]
+                    image_data = np.array(image_data).reshape(28, 28)
+                    image_data = ((image_data + 1) * 127.5).astype(np.uint8)  # scale [-1..1]->[0..255]
+                    pil_img = PIL.Image.fromarray(image_data)
+                    char_images.append(pil_img)
+                else:
+                    import base64
+                    from io import BytesIO
+                    letter_index = letter_index + 1
+                    try:
+                        response = supabase.table("Letters").select('*').eq("id", letter_index).execute()
+                        if not response.data:
+                            flash(f'Error loading from supabase: {response.error}')
+                        image_b64 = response.data[0]['image']  # Fetch Base64-encoded image
+                        image_data = base64.b64decode(image_b64)  # Decode Base64
+                        image_bytes = BytesIO(image_data)  # Convert to BytesIO object
+                        image = PIL.Image.open(image_bytes)  # Open the image using PIL
+                        char_images.append(image)  # Append to the list
+                    except Exception as e:
+                        flash(f'Error loading image: {e}')
 
         # 3. Stitch images side by side
         #    The final width is 28 * number_of_chars, height stays 28
@@ -329,36 +356,56 @@ def game():
     return render_template("game.html")
 
 def _generate_new_challenge():
+    from io import BytesIO
+    import base64
     letter = random.choice(string.ascii_uppercase)
     session['current_letter'] = letter
 
     latent_vector = [round(random.random(), 2) for _ in range(100)]
     letter_index = ord(letter) - ord('A')
-    payload = {
-                "instances": [
-                    {
-                        "keras_tensor_19": [letter_index],
-                        "keras_tensor_23": latent_vector
-                    }
-                ]
-            }
+    
+    if ENVIRONMENT == 'production':
+        payload = {
+                    "instances": [
+                        {
+                            "keras_tensor_19": [letter_index],
+                            "keras_tensor_23": latent_vector
+                        }
+                    ]
+                }
 
-    response = requests.post(GENERATOR_URL, json=payload)
+        response = requests.post(GENERATOR_URL, json=payload)
 
-    if response.status_code == 200:
-        prediction = response.json()
-        image_data = prediction["predictions"][0]
+        if response.status_code == 200:
+            prediction = response.json()
+            image_data = prediction["predictions"][0]
 
-        # Convert array -> numpy -> PIL image -> raw bytes
-        image_data = np.array(image_data).reshape(28, 28)
-        image_data = ((image_data + 1) * 127.5).astype(np.uint8)  # Rescale [-1..1] -> [0..255]
-        image = PIL.Image.fromarray(image_data)
-        buffer = BytesIO()
-        image.save(buffer, format="PNG")
-        buffer.seek(0)
-        session['current_image'] = base64.b64encode(buffer.read()).decode('utf-8')
+            # Convert array -> numpy -> PIL image -> raw bytes
+            image_data = np.array(image_data).reshape(28, 28)
+            image_data = ((image_data + 1) * 127.5).astype(np.uint8)  # Rescale [-1..1] -> [0..255]
+            image = PIL.Image.fromarray(image_data)
+            buffer = BytesIO()
+            image.save(buffer, format="PNG")
+            buffer.seek(0)
+            session['current_image'] = base64.b64encode(buffer.read()).decode('utf-8')
+        else:
+            flash(f"Error generating image, try again later. ", 'Warning')
     else:
-        flash(f"Error generating image, try again later. ")
+        letter_index = letter_index + 1
+        try:
+            response = supabase.table("Letters").select('*').eq("id", letter_index).execute()
+            if not response.data:
+                flash(f'Error loading from supabase: {response.error}', 'warning')
+            image_b64 = response.data[0]['image']
+            image_data = base64.b64decode(image_b64)
+            image_bytes = BytesIO(image_data)
+            image = PIL.Image.open(image_bytes)
+            buffer = BytesIO()
+            image.save(buffer, format='PNG')
+            buffer.seek(0)
+            session['current_image'] = base64.b64encode(buffer.read()).decode('utf-8')
+        except Exception as e:
+            flash(f"Error loading image: {e}")
 
 # HISTORY ROUTES
 
