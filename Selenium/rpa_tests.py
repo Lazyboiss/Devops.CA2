@@ -5,17 +5,22 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time
+import time, os
+
+if os.getenv('ENVIRONMENT') == 'production':
+    URL = "http://localhost:5000"
+else:
+    URL = "https://devops-ca2-by4j.onrender.com"
 
 def setup_driver():
     options = webdriver.ChromeOptions()  
     service = Service(ChromeDriverManager().install())  
     driver = webdriver.Chrome(service=service, options=options)
-    driver.get("http://localhost:5000")  # Navigate directly to landing page
+    driver.get(f"{URL}")  # Navigate directly to landing page
     return driver
 
 def test_registration(driver):
-    driver.get("http://localhost:5000/")  # Ensure we're on the landing page
+    driver.get(f"{URL}/")  # Ensure we're on the landing page
 
     # Wait for the username field to appear
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "username")))
@@ -36,7 +41,7 @@ def test_registration(driver):
     assert "Registration successful!" in driver.page_source  # Adjust message as needed
 
 def test_login(driver):
-    driver.get("http://localhost:5000/login")  # Login page exists in your HTML
+    driver.get(f"{URL}/login")  # Login page exists in your HTML
 
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "username")))
 
@@ -57,7 +62,7 @@ def test_login(driver):
     assert "Login successful!" in driver.page_source  # Adjust message if needed
 
 def test_invalid_registration(driver):
-    driver.get("http://localhost:5000/")  # Landing page is also registration
+    driver.get(f"{URL}/")  # Landing page is also registration
 
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "username")))
 
