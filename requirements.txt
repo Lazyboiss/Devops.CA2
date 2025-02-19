@@ -7,5 +7,6 @@ pillow
 Werkzeug==2.3.7
 numpy
 pillow
+gunicorn
 # for RPA testing on chrome
 webdriver-manager

@@ -456,4 +456,8 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    if ENVIRONMENT == 'deployment':
+        port = int(os.getenv("PORT"), 10000)
+        app.run(host='0.0.0.0', port=port)
+    else:
+        app.run(debug=True)
